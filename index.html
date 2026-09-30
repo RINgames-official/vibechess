@@ -57,11 +57,43 @@ html.returning form { display: none; }
 </form>
 <script>
 (function () {
-  var SALT = 'AxTZMwmyvuNn6QDkwtLN3Q==', ITER = 400000, KEEP = 'vibechess-access';
+  var SALT = 'AxTZMwmyvuNn6QDkwtLN3Q==', ITER = 400000, KEEP = 'vibechess-access', SITE = 'live', TEXT = '';
   var form = document.getElementById('gate'), input = document.getElementById('code'), go = document.getElementById('go'), msg = document.getElementById('msg');
   // the game starts downloading at once, while the code is typed or the remembered one is turned into a key
   var gameFile = fetch('game.bin').then(function (r) { if (!r.ok) throw new Error('offline'); return r.arrayBuffer(); }, function () { throw new Error('offline'); });
   gameFile.catch(function () {});
+  // the published text edits (the test site and the editor only): fetched fresh each visit, alongside the game
+  var textFile = !TEXT ? Promise.resolve(null) : fetch(TEXT + '?t=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+    if (r.status === 404) return null;   // none published
+    if (!r.ok) throw new Error('it couldn\u2019t be downloaded (HTTP ' + r.status + ')');
+    return r.arrayBuffer();
+  }, function () { throw new Error('it couldn\u2019t be downloaded'); });
+  textFile.catch(function () {});
+  function inflate(buf) { return new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text(); }
+  // the edits for the game to apply before it draws anything (window.vcTextOverrides); a file that can't be read, or
+  // hasn't come TEXT_WAIT ms after the code is taken, is ignored (the game opens without it), and window.vcTextNote says
+  // why (the Debug screen shows it)
+  var TEXT_WAIT = 5000;
+  function readText(key) {
+    window.vcTextOverrides = null; window.vcTextNote = null;
+    var late = new Promise(function (resolve) { setTimeout(function () { resolve('late'); }, TEXT_WAIT); });
+    return Promise.race([textFile, late]).then(function (buf) {
+      if (buf === 'late') throw new Error('it took too long to download');
+      if (!buf) return;
+      var b = new Uint8Array(buf);
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(0, 12) }, key, b.slice(12)).then(inflate, function () {
+        throw new Error('it couldn\u2019t be decrypted');
+      }).then(function (text) {
+        var o = null;
+        try { o = JSON.parse(text); } catch (e) {}
+        if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error('it isn\u2019t a set of edits');
+        window.vcTextOverrides = o;
+      });
+    }).then(null, function (e) {
+      window.vcTextOverrides = null;
+      window.vcTextNote = TEXT + ' was ignored: ' + (e && e.message && /^it /.test(e.message) ? e.message : 'it couldn\u2019t be read');
+    });
+  }
   function bytes(b64) { var s = atob(b64), out = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) out[i] = s.charCodeAt(i); return out; }
   function normalise(code) { return code.trim().toLowerCase().split(/\s+/).join('-'); }
   function unlock(code) {
@@ -69,21 +101,29 @@ html.returning form { display: none; }
     if (typeof DecompressionStream !== 'function') return Promise.reject(new Error('old'));
     var enc = new TextEncoder(), key;
     return crypto.subtle.importKey('raw', enc.encode(normalise(code)), 'PBKDF2', false, ['deriveKey']).then(function (base) {
-      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: bytes(SALT), iterations: ITER, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+      // (only the editor's own key encrypts: its undo history)
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: bytes(SALT), iterations: ITER, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, SITE === 'edit' ? ['encrypt', 'decrypt'] : ['decrypt']);
     }).then(function (k) {
       key = k;
       return gameFile;
     }).then(function (buf) {
       var b = new Uint8Array(buf);   // a 12-byte IV, then the ciphertext
       return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(0, 12) }, key, b.slice(12));
-    }).then(function (packed) {   // the game was compressed before it was encrypted
-      var out = new Blob([packed]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
-      return new Response(out).text();
-    }).then(function (html) {
-      window.vcBookKey = key;   // the game decrypts opening-book shards with the same key
-      window.vcBookBase = 'book/';
-      window.vcSite = 'live';   // which site the game is on: 'live' has no Debug screen, 'test' has it (as a build with no gate does)
-      return html;
+    }).then(inflate).then(function (text) {   // (the game was compressed before it was encrypted)
+      var html = text, bookKey = Promise.resolve(key);
+      if (SITE === 'edit') {   // the editor's game starts with a line holding the test site's key and the relay secret
+        var cut = text.indexOf('\n'), head = JSON.parse(text.slice(0, cut));
+        html = text.slice(cut + 1);
+        window.vcEditKey = key;   // the editor's own key (its undo history)
+        window.vcEditRelay = head.relay;
+        bookKey = crypto.subtle.importKey('raw', bytes(head.testKey), 'AES-GCM', false, ['encrypt', 'decrypt']);
+      }
+      return bookKey.then(function (k) {
+        window.vcBookKey = k;   // the game decrypts opening-book shards (and on the editor, the text edits) with it
+        window.vcBookBase = 'book/';
+        window.vcSite = SITE;   // which site the game is on: 'live' has no Debug screen; 'test' and 'edit' have it (as a build with no gate does)
+        return readText(k);
+      }).then(function () { return html; });
     });
   }
   function open(html) { document.open(); document.write(html); document.close(); }
