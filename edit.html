@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Vibe Chess (editor)</title>
+<script>try { if (localStorage.getItem('vibechess-edit-access')) document.documentElement.classList.add('returning'); } catch (e) {}</script>
+<link rel="prefetch" href="engine/stockfish-18-lite-single.wasm">
+<link rel="prefetch" href="engine/stockfish-18-lite-single.js">
+<style>
+:root {
+  --bg: #f5f6f8; --field: #ffffff; --ink: #14161a; --muted: #6a6f78; --line: #dcdfe4; --ring: rgba(20, 22, 26, 0.12);
+  --btn: #14161a; --btn-ink: #ffffff; --bad: #c8372d; color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0e1013; --field: #171a1f; --ink: #eef0f3; --muted: #9aa0a9; --line: #2a2e35; --ring: rgba(238, 240, 243, 0.14);
+    --btn: #eef0f3; --btn-ink: #0e1013; --bad: #ff7b70; }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { display: grid; place-items: center; padding: 24px; background: var(--bg); color: var(--ink);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+form { width: min(100%, 340px); display: flex; flex-direction: column; gap: 8px; }
+label { font-size: 14px; font-weight: 600; color: var(--muted); padding-left: 18px; }
+.pill { position: relative; display: flex; align-items: center; height: 54px; padding: 0 6px 0 18px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--field); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.18); transition: border-color 0.15s, box-shadow 0.15s; }
+.pill:focus-within { border-color: var(--ink); box-shadow: 0 0 0 4px var(--ring), 0 8px 24px -12px rgba(0, 0, 0, 0.18); }
+input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 17px; letter-spacing: 0.01em; outline: none; }
+button { flex: none; display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 0; border-radius: 50%; background: var(--btn); color: var(--btn-ink); cursor: pointer; transition: transform 0.12s, opacity 0.12s; }
+button:hover { transform: translateX(1px); }
+button:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+button:disabled { cursor: default; }
+button svg { width: 20px; height: 20px; }
+button.busy svg { display: none; }
+button.busy::after { content: ""; width: 18px; height: 18px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+/* a device that has been let in before sees a spinner while the game decrypts, never the form */
+.loading { display: none; width: 28px; height: 28px; border: 2.5px solid var(--muted); border-right-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+html.returning .loading { display: block; }
+html.returning form { display: none; }
+.msg { min-height: 1.3em; margin: 2px 0 0; padding-left: 18px; font-size: 13.5px; color: var(--bad); }
+.wrong .pill { border-color: var(--bad); animation: shake 0.32s; }
+@keyframes shake { 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .wrong .pill, button.busy::after, .loading { animation: none; } }
+</style>
+</head>
+<body>
+<div class="loading" role="status" aria-label="Loading"></div>
+<form id="gate" autocomplete="off">
+  <label for="code">Access code</label>
+  <div class="pill">
+    <input id="code" name="code" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" required>
+    <button id="go" type="submit" aria-label="Enter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <p class="msg" id="msg" role="status" aria-live="polite"></p>
+</form>
+<script>
+(function () {
+  var SALT = 'Xd0Eb9rW9bohGJKBg9Rcow==', ITER = 400000, KEEP = 'vibechess-edit-access', SITE = 'edit', TEXT = 'test/text.bin';
+  var form = document.getElementById('gate'), input = document.getElementById('code'), go = document.getElementById('go'), msg = document.getElementById('msg');
+  // the game starts downloading at once, while the code is typed or the remembered one is turned into a key
+  var gameFile = fetch('edit/game.bin').then(function (r) { if (!r.ok) throw new Error('offline'); return r.arrayBuffer(); }, function () { throw new Error('offline'); });
+  gameFile.catch(function () {});
+  // the published text edits (the test site and the editor only): fetched fresh each visit, alongside the game
+  var textFile = !TEXT ? Promise.resolve(null) : fetch(TEXT + '?t=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+    if (r.status === 404) return null;   // none published
+    if (!r.ok) throw new Error('it couldn\u2019t be downloaded (HTTP ' + r.status + ')');
+    return r.arrayBuffer();
+  }, function () { throw new Error('it couldn\u2019t be downloaded'); });
+  textFile.catch(function () {});
+  function inflate(buf) { return new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text(); }
+  // the edits for the game to apply before it draws anything (window.vcTextOverrides); a file that can't be read, or
+  // hasn't come TEXT_WAIT ms after the code is taken, is ignored (the game opens without it), and window.vcTextNote says
+  // why (the Debug screen shows it)
+  var TEXT_WAIT = 5000;
+  function readText(key) {
+    window.vcTextOverrides = null; window.vcTextNote = null;
+    var late = new Promise(function (resolve) { setTimeout(function () { resolve('late'); }, TEXT_WAIT); });
+    return Promise.race([textFile, late]).then(function (buf) {
+      if (buf === 'late') throw new Error('it took too long to download');
+      if (!buf) return;
+      var b = new Uint8Array(buf);
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(0, 12) }, key, b.slice(12)).then(inflate, function () {
+        throw new Error('it couldn\u2019t be decrypted');
+      }).then(function (text) {
+        var o = null;
+        try { o = JSON.parse(text); } catch (e) {}
+        if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error('it isn\u2019t a set of edits');
+        window.vcTextOverrides = o;
+      });
+    }).then(null, function (e) {
+      window.vcTextOverrides = null;
+      window.vcTextNote = TEXT + ' was ignored: ' + (e && e.message && /^it /.test(e.message) ? e.message : 'it couldn\u2019t be read');
+    });
+  }
+  function bytes(b64) { var s = atob(b64), out = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) out[i] = s.charCodeAt(i); return out; }
+  function normalise(code) { return code.trim().toLowerCase().split(/\s+/).join('-'); }
+  function unlock(code) {
+    if (!window.crypto || !crypto.subtle) return Promise.reject(new Error('insecure'));
+    if (typeof DecompressionStream !== 'function') return Promise.reject(new Error('old'));
+    var enc = new TextEncoder(), key;
+    return crypto.subtle.importKey('raw', enc.encode(normalise(code)), 'PBKDF2', false, ['deriveKey']).then(function (base) {
+      // (only the editor's own key encrypts: its undo history)
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: bytes(SALT), iterations: ITER, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, SITE === 'edit' ? ['encrypt', 'decrypt'] : ['decrypt']);
+    }).then(function (k) {
+      key = k;
+      return gameFile;
+    }).then(function (buf) {
+      var b = new Uint8Array(buf);   // a 12-byte IV, then the ciphertext
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(0, 12) }, key, b.slice(12));
+    }).then(inflate).then(function (text) {   // (the game was compressed before it was encrypted)
+      var html = text, bookKey = Promise.resolve(key);
+      if (SITE === 'edit') {   // the editor's game starts with a line holding the test site's key and the relay secret
+        var cut = text.indexOf('\n'), head = JSON.parse(text.slice(0, cut));
+        html = text.slice(cut + 1);
+        window.vcEditKey = key;   // the editor's own key (its undo history)
+        window.vcEditRelay = head.relay;
+        bookKey = crypto.subtle.importKey('raw', bytes(head.testKey), 'AES-GCM', false, ['encrypt', 'decrypt']);
+      }
+      return bookKey.then(function (k) {
+        window.vcBookKey = k;   // the game decrypts opening-book shards (and on the editor, the text edits) with it
+        window.vcBookBase = 'test/book/';
+        window.vcSite = SITE;   // which site the game is on: 'live' has no Debug screen; 'test' and 'edit' have it (as a build with no gate does)
+        return readText(k);
+      }).then(function () { return html; });
+    });
+  }
+  function open(html) { document.open(); document.write(html); document.close(); }
+  function attempt(code, remembered) {
+    go.disabled = true; go.classList.add('busy'); msg.textContent = '';
+    unlock(code).then(function (html) {
+      try { localStorage.setItem(KEEP, normalise(code)); } catch (e) {}
+      open(html);
+    }, function (e) {
+      document.documentElement.classList.remove('returning');
+      go.disabled = false; go.classList.remove('busy');
+      if (e && e.message === 'insecure') { msg.textContent = 'This page needs to be opened over https.'; return; }
+      if (e && e.message === 'old') { msg.textContent = 'This browser is too old for Vibe Chess. Please update it.'; return; }
+      if (e && e.message === 'offline') { msg.textContent = 'The game couldn’t be downloaded. Check your connection and reload.'; return; }
+      if (remembered) { try { localStorage.removeItem(KEEP); } catch (x) {} msg.textContent = ''; input.focus(); return; }
+      msg.textContent = 'That code didn\u2019t work.';
+      form.classList.remove('wrong'); void form.offsetWidth; form.classList.add('wrong');
+      input.select();
+    });
+  }
+  form.addEventListener('submit', function (e) { e.preventDefault(); if (input.value.trim()) attempt(input.value, false); });
+  input.addEventListener('input', function () { form.classList.remove('wrong'); msg.textContent = ''; });
+  var kept = null; try { kept = localStorage.getItem(KEEP); } catch (e) {}
+  if (kept) attempt(kept, true); else input.focus();   // this device has been let in before: straight through
+})();
+</script>
+</body>
+</html>

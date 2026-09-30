@@ -1,0 +1,4 @@
+*.bin binary
+*.wasm binary
+*.js -text
+*.html -text

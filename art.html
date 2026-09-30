@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Art brief for the Vibe Chess faces.">
+<title>His Faces</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=JetBrains+Mono:wght@400;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+  color-scheme: light;
+  --bg: #f3f1ec; --card: #fbfaf7; --fg: #1f1d1a; --muted: #6c675f; --line: #d9d3c8; --line-strong: #b9b2a5;
+  --accent: #1d7a4c; --accent-soft: rgba(29, 122, 76, 0.10); --warn: #b4441f; --warn-soft: rgba(180, 68, 31, 0.10);
+  --ink: #1c50d8; --bezel: #26292d;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { color-scheme: dark;
+    --bg: #171715; --card: #211f1c; --fg: #ece9e2; --muted: #a39e94; --line: #38352f; --line-strong: #57534b;
+    --accent: #7dffb0; --accent-soft: rgba(125, 255, 176, 0.10); --warn: #ffa27f; --warn-soft: rgba(255, 162, 127, 0.12); --ink: #8fb0ff; }
+}
+:root[data-theme="dark"] { color-scheme: dark;
+  --bg: #171715; --card: #211f1c; --fg: #ece9e2; --muted: #a39e94; --line: #38352f; --line-strong: #57534b;
+  --accent: #7dffb0; --accent-soft: rgba(125, 255, 176, 0.10); --warn: #ffa27f; --warn-soft: rgba(255, 162, 127, 0.12); --ink: #8fb0ff; }
+
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 15px; line-height: 1.5; }
+img { max-width: 100%; height: auto; display: block; }
+a { color: inherit; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: grid; gap: 48px; }
+h1, h2 { font-family: "Fraunces", Georgia, "Times New Roman", serif; font-weight: 600; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(30px, 5vw, 44px); line-height: 1.05; }
+h2 { font-size: 26px; line-height: 1.15; }
+h3 { font-family: "Space Grotesk", system-ui, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -0.01em; margin: 0; text-transform: capitalize; }
+.chip, dt, .eyebrow, figcaption, .thumbs span { font-family: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace; }
+.eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+
+.intro { display: grid; gap: 20px; }
+.lede { font-size: 18px; max-width: 64ch; margin: 0; }
+.intro > p { margin: 0; max-width: 70ch; }
+.context { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 32px; align-items: start; }
+.context > ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 12px; }
+.context > ul > li { padding-left: 16px; position: relative; max-width: 62ch; }
+.context > ul > li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.context b { font-weight: 650; }
+.side { display: grid; gap: 16px; }
+
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; display: grid; gap: 10px; }
+.card h2 { font-size: 20px; }
+.card ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+/* the game's layout, simplified: board on the left, monitor on the right */
+.layout { margin: 0; }
+.layout svg { width: 100%; height: auto; display: block; }
+.layout figcaption { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; text-transform: none; }
+.lay-board-a { fill: #d8cfbd; } .lay-board-b { fill: #a88c67; }
+.lay-label { font: 700 10px "JetBrains Mono", ui-monospace, monospace; letter-spacing: 0.08em; fill: var(--muted); }
+.lay-card { fill: var(--bg); stroke: var(--line-strong); stroke-width: 1.2; }
+.lay-gaze { stroke: var(--accent); stroke-width: 2.2; fill: none; stroke-dasharray: 5 5; }
+.lay-gaze-head { fill: var(--accent); }
+
+/* at a glance */
+.glance { display: grid; gap: 14px; }
+.glance h3 { font-size: 15px; text-transform: none; }
+.glance h3 small { font: 400 12px "JetBrains Mono", ui-monospace, monospace; color: var(--muted); margin-left: 6px; }
+.thumbs { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.thumbs a { display: grid; gap: 2px; justify-items: center; text-decoration: none; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 2px 4px 5px; width: 92px; }
+.thumbs a:hover, .thumbs a:focus-visible { border-color: var(--ink); }
+.thumbs img { width: 84px; }
+.thumbs span { font-size: 10.5px; color: #555; text-transform: capitalize; }
+.thumbs.plain a { width: auto; padding: 6px 10px; background: var(--card); }
+.thumbs.plain span { color: var(--fg); font-size: 12px; text-transform: none; }
+
+/* entries */
+.group { display: grid; gap: 22px; }
+.ghead { display: grid; gap: 6px; border-top: 2px solid var(--fg); padding-top: 14px; }
+.ghead p { margin: 0; color: var(--muted); max-width: 72ch; }
+.entry { display: grid; grid-template-columns: minmax(0, 320px) minmax(0, 1fr); gap: 28px; align-items: start; padding-block: 18px; border-bottom: 1px solid var(--line); scroll-margin-top: 12px; }
+.entry:last-child { border-bottom: 0; }
+.art { display: grid; gap: 10px; }
+figure { margin: 0; display: grid; gap: 4px; }
+figcaption { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.still img, .others img, .partpics img { background: #fff; border: 1px solid var(--line); border-radius: 10px; }
+.still img, .others img { width: 100%; }
+.entry.todo .still img { border-color: var(--warn); border-style: dashed; }
+.others { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.mon img { border: 4px solid var(--bezel); border-radius: 8px; background: #07130e; }
+.words { display: grid; gap: 14px; }
+.nameline { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 10px; }
+.chip { font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); }
+.chip.warn { background: var(--warn-soft); color: var(--warn); }
+.chip.ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); font-weight: 400; }
+.brief { font-size: 17px; line-height: 1.55; margin: 0; max-width: 62ch; }
+.facts { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; }
+.facts div { display: grid; gap: 2px; align-content: start; }
+.facts div.wide { grid-column: 1 / -1; }
+dt { font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+dd { margin: 0; font-size: 14px; }
+
+/* moving parts */
+.parts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.part { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; display: grid; gap: 12px; align-content: start; scroll-margin-top: 12px; }
+.part.wide { grid-column: 1 / -1; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); align-items: start; }
+.part h3 { font-size: 19px; text-transform: none; }
+.part p { margin: 6px 0 0; max-width: 62ch; }
+.partpics { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 8px; }
+.part.wide .partpics { display: flex; flex-wrap: wrap; }
+.part.wide .partpics figure { min-width: 0; }
+#vein figure { max-width: 280px; }
+.part.wide .partpics figure { flex: 1 1 260px; }
+#peer .partpics img, #small .partpics img { background: #171715; }
+#peer { grid-template-columns: minmax(0, 380px) minmax(0, 1fr); }
+.part.stack { grid-template-columns: 1fr; }
+.part.stack .partpics figure { flex-basis: 300px; }
+#small .partpics figure:first-child { flex-basis: 100%; max-width: 680px; }
+#talking .partpics figure { max-width: 240px; }
+
+.watch { display: grid; gap: 16px; }
+.watch ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 14px; }
+.watch li { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 14px; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.pair img { background: #fff; border-radius: 6px; border: 1px solid var(--line); }
+.watch b { text-transform: capitalize; }
+.signoff { margin: 0; font-size: 17px; }
+.foot { font-size: 13px; color: var(--muted); max-width: 72ch; margin: 0; }
+
+@media (max-width: 760px) {
+  .context { grid-template-columns: 1fr; }
+  #peer { grid-template-columns: 1fr; }
+  .entry { grid-template-columns: 1fr; gap: 16px; }
+  .art { max-width: 360px; }
+  .brief { font-size: 16px; }
+  .parts { grid-template-columns: 1fr; }
+  .part.wide { grid-template-columns: 1fr; }
+}
+@media (max-width: 520px) { .watch ul { grid-template-columns: 1fr; } .watch li { grid-template-columns: 1fr; } .pair { max-width: 280px; } }
+@media (max-width: 420px) { .wrap { padding-inline: 16px; } .facts { grid-template-columns: 1fr; } .thumbs a { width: 76px; } .thumbs img { width: 68px; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <header class="intro">
+    <span class="eyebrow">Vibe Chess · Art brief</span>
+    <h1>His faces</h1>
+    <p class="lede">This page is the full list of what the game needs from his face, including the tutorial’s new faces. The things you haven’t drawn yet are at the top, then the moving parts, then the faces from your sheet. Where you haven’t drawn something, I’ve made a stand-in from your strokes so the game has something to show, but they’re only placeholders: please redraw anything you like, and tell me if anything I changed on your drawings looks wrong.</p>
+    <div class="context">
+      <ul>
+        <li><b>He’s the main character.</b> Humans are long gone, and the galaxy is run by robots who call themselves AGIs (“Actual General Intelligence”). They sort out who’s who by playing chess. He’s one of them, and not a bright one: vain, moody and impatient, convinced he’s a genius, and all he wants is to win.</li>
+        <li><b>The player is his CADDY</b>, the little helper robot who plugs in his gear and feeds him prompts. He doesn’t think much of it. He takes the credit when things go well, blames it when they don’t, and cries when he loses.</li>
+        <li><b>He lives on a retro green monitor</b> beside the board. On a computer the board is off to his left and a little below, so “at the board” means glancing down-left. In the tutorial he often looks straight out of the screen at the player instead.</li>
+        <li><b>Draw in any colour you like.</b> The game redraws everything in glowing phosphor green on a near-black screen, with no head outline: just eyes, brows, mouth and the little marks. On this page the pictures are on white in your blue, so they’re easy to compare with your sheet, with the monitor version beside them. The game adds the movement, the blinking and the light blue tears and sweat.</li>
+        <li><b>How I built your set:</b> you drew one eye and reused it, so the game does the same. Each pupil is your solid half-moon, cut to the inside of the eye, with your little square highlight, and it can now point anywhere (both eyes always point the same way).</li>
+      </ul>
+      <div class="side">
+        <section class="card" aria-labelledby="wanted">
+          <h2 id="wanted">What would help most, in order</h2>
+          <ol>
+            <li><a href="#new">The seven faces you haven’t drawn</a>, starting with impatient, the very first face a player sees.</li>
+            <li><a href="#hysterics">Hysterics</a>, which borrows your Won face at the moment.</li>
+            <li><a href="#talking">A talking mouth</a> for each face.</li>
+            <li><a href="#blink">A closed eye</a> for blinks.</li>
+            <li><a href="#drops">Tears, sweat</a> and <a href="#vein">the swearing vein</a>.</li>
+            <li><a href="#peer">Pressed to the glass</a>.</li>
+            <li><a href="#gaze">One pair of eyes looking nine ways</a>.</li>
+            <li><a href="#small">The tiny taskbar face</a>.</li>
+          </ol>
+          <p>For every face the game needs the still face, a talking mouth, eyes that still work when they point elsewhere, and something that reads at the size of the taskbar button.</p>
+        </section>
+        <figure class="layout card" aria-label="Game layout on a computer: board on the left, monitor with the face on the right">
+          <svg viewBox="0 0 360 210" role="img">
+            <g><rect class="lay-board-a" x="12" y="16" width="21" height="21"/><rect class="lay-board-b" x="33" y="16" width="21" height="21"/><rect class="lay-board-a" x="54" y="16" width="21" height="21"/><rect class="lay-board-b" x="75" y="16" width="21" height="21"/><rect class="lay-board-a" x="96" y="16" width="21" height="21"/><rect class="lay-board-b" x="117" y="16" width="21" height="21"/><rect class="lay-board-a" x="138" y="16" width="21" height="21"/><rect class="lay-board-b" x="159" y="16" width="21" height="21"/><rect class="lay-board-b" x="12" y="37" width="21" height="21"/><rect class="lay-board-a" x="33" y="37" width="21" height="21"/><rect class="lay-board-b" x="54" y="37" width="21" height="21"/><rect class="lay-board-a" x="75" y="37" width="21" height="21"/><rect class="lay-board-b" x="96" y="37" width="21" height="21"/><rect class="lay-board-a" x="117" y="37" width="21" height="21"/><rect class="lay-board-b" x="138" y="37" width="21" height="21"/><rect class="lay-board-a" x="159" y="37" width="21" height="21"/><rect class="lay-board-a" x="12" y="58" width="21" height="21"/><rect class="lay-board-b" x="33" y="58" width="21" height="21"/><rect class="lay-board-a" x="54" y="58" width="21" height="21"/><rect class="lay-board-b" x="75" y="58" width="21" height="21"/><rect class="lay-board-a" x="96" y="58" width="21" height="21"/><rect class="lay-board-b" x="117" y="58" width="21" height="21"/><rect class="lay-board-a" x="138" y="58" width="21" height="21"/><rect class="lay-board-b" x="159" y="58" width="21" height="21"/><rect class="lay-board-b" x="12" y="79" width="21" height="21"/><rect class="lay-board-a" x="33" y="79" width="21" height="21"/><rect class="lay-board-b" x="54" y="79" width="21" height="21"/><rect class="lay-board-a" x="75" y="79" width="21" height="21"/><rect class="lay-board-b" x="96" y="79" width="21" height="21"/><rect class="lay-board-a" x="117" y="79" width="21" height="21"/><rect class="lay-board-b" x="138" y="79" width="21" height="21"/><rect class="lay-board-a" x="159" y="79" width="21" height="21"/><rect class="lay-board-a" x="12" y="100" width="21" height="21"/><rect class="lay-board-b" x="33" y="100" width="21" height="21"/><rect class="lay-board-a" x="54" y="100" width="21" height="21"/><rect class="lay-board-b" x="75" y="100" width="21" height="21"/><rect class="lay-board-a" x="96" y="100" width="21" height="21"/><rect class="lay-board-b" x="117" y="100" width="21" height="21"/><rect class="lay-board-a" x="138" y="100" width="21" height="21"/><rect class="lay-board-b" x="159" y="100" width="21" height="21"/><rect class="lay-board-b" x="12" y="121" width="21" height="21"/><rect class="lay-board-a" x="33" y="121" width="21" height="21"/><rect class="lay-board-b" x="54" y="121" width="21" height="21"/><rect class="lay-board-a" x="75" y="121" width="21" height="21"/><rect class="lay-board-b" x="96" y="121" width="21" height="21"/><rect class="lay-board-a" x="117" y="121" width="21" height="21"/><rect class="lay-board-b" x="138" y="121" width="21" height="21"/><rect class="lay-board-a" x="159" y="121" width="21" height="21"/><rect class="lay-board-a" x="12" y="142" width="21" height="21"/><rect class="lay-board-b" x="33" y="142" width="21" height="21"/><rect class="lay-board-a" x="54" y="142" width="21" height="21"/><rect class="lay-board-b" x="75" y="142" width="21" height="21"/><rect class="lay-board-a" x="96" y="142" width="21" height="21"/><rect class="lay-board-b" x="117" y="142" width="21" height="21"/><rect class="lay-board-a" x="138" y="142" width="21" height="21"/><rect class="lay-board-b" x="159" y="142" width="21" height="21"/><rect class="lay-board-b" x="12" y="163" width="21" height="21"/><rect class="lay-board-a" x="33" y="163" width="21" height="21"/><rect class="lay-board-b" x="54" y="163" width="21" height="21"/><rect class="lay-board-a" x="75" y="163" width="21" height="21"/><rect class="lay-board-b" x="96" y="163" width="21" height="21"/><rect class="lay-board-a" x="117" y="163" width="21" height="21"/><rect class="lay-board-b" x="138" y="163" width="21" height="21"/><rect class="lay-board-a" x="159" y="163" width="21" height="21"/></g>
+            <text class="lay-label" x="12" y="199">BOARD</text>
+            <rect x="198" y="12" width="150" height="104" rx="10" fill="#26292d"/>
+            <rect x="204" y="18" width="138" height="92" rx="6" fill="#07130e"/>
+            <line x1="273" y1="24" x2="273" y2="104" stroke="#7dffb0" stroke-opacity="0.35" stroke-dasharray="3 3"/>
+            <g fill="none" stroke="#7dffb0" stroke-width="1.2" stroke-opacity="0.55"><line x1="212" y1="34" x2="258" y2="34"/><line x1="212" y1="42" x2="248" y2="42"/><line x1="212" y1="80" x2="258" y2="80"/><line x1="212" y1="88" x2="244" y2="88"/></g>
+            <g fill="none" stroke="#7dffb0" stroke-width="2.6" stroke-linecap="round"><ellipse cx="297" cy="55" rx="6" ry="9"/><ellipse cx="319" cy="55" rx="6" ry="9"/><path d="M302 76 Q308 82 314 76"/></g>
+            <path d="M291.5 57 A6 9 0 0 0 297 64 A6 9 0 0 0 300 59 Z" fill="#7dffb0"/><path d="M313.5 57 A6 9 0 0 0 319 64 A6 9 0 0 0 322 59 Z" fill="#7dffb0"/>
+            <text class="lay-label" x="206" y="130">MONITOR</text>
+            <rect class="lay-card" x="206" y="144" width="40" height="54" rx="5"/><rect class="lay-card" x="252" y="144" width="40" height="54" rx="5"/><rect class="lay-card" x="298" y="144" width="40" height="54" rx="5"/>
+            <path class="lay-gaze" d="M286 64 Q230 96 150 104"/><path class="lay-gaze-head" d="M146 104 l10 -6 l-1 11 z"/>
+          </svg>
+          <figcaption>On a computer: the dashed line is where “at the board” points from his face.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </header>
+
+  <section class="glance" aria-labelledby="glance">
+    <header class="ghead"><h2 id="glance">Everything at a glance</h2><p>Every face the game uses, as it is in the game now. Click one to jump to it.</p></header>
+    <h3>Not drawn yet<small>8, my stand-ins</small></h3>
+    <ul class="thumbs"><li><a href="#impatient"><img src="art/impatient.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>impatient</span></a></li><li><a href="#skeptical"><img src="art/skeptical.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>skeptical</span></a></li><li><a href="#swear"><img src="art/swear.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>swear</span></a></li><li><a href="#blank"><img src="art/blank.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>blank</span></a></li><li><a href="#panic"><img src="art/panic.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>panic</span></a></li><li><a href="#curious"><img src="art/curious.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>curious</span></a></li><li><a href="#rapt"><img src="art/rapt.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>rapt</span></a></li><li><a href="#hysterics"><img src="art/hysterics.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>hysterics</span></a></li></ul>
+    <h3>Moving parts<small>7</small></h3>
+    <ul class="thumbs plain"><li><a href="#talking"><span>Talking mouths</span></a></li><li><a href="#blink"><span>Blinks</span></a></li><li><a href="#drops"><span>Tears, tears of laughter and sweat</span></a></li><li><a href="#vein"><span>The swearing vein</span></a></li><li><a href="#peer"><span>Pressed to the glass</span></a></li><li><a href="#gaze"><span>Eyes that look anywhere</span></a></li><li><a href="#small"><span>The tiny face on the taskbar</span></a></li></ul>
+    <h3>From your sheet<small>15</small></h3>
+    <ul class="thumbs"><li><a href="#focus"><img src="art/focus.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>focus</span></a></li><li><a href="#smile"><img src="art/smile.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>smile</span></a></li><li><a href="#happy"><img src="art/happy.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>happy</span></a></li><li><a href="#scared"><img src="art/scared.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>scared</span></a></li><li><a href="#smirk"><img src="art/smirk.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>smirk</span></a></li><li><a href="#laugh"><img src="art/laugh.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>laugh</span></a></li><li><a href="#drop"><img src="art/drop.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>drop</span></a></li><li><a href="#angry"><img src="art/angry.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>angry</span></a></li><li><a href="#zapped"><img src="art/zapped.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>zapped</span></a></li><li><a href="#maniac"><img src="art/maniac.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>maniac</span></a></li><li><a href="#stare"><img src="art/stare.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>stare</span></a></li><li><a href="#confused"><img src="art/confused.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>confused</span></a></li><li><a href="#beam"><img src="art/beam.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>beam</span></a></li><li><a href="#cry"><img src="art/cry.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>cry</span></a></li><li><a href="#meh"><img src="art/meh.png" width="271" height="208" alt="" loading="lazy" decoding="async" class="tiny"><span>meh</span></a></li></ul>
+  </section>
+
+<section class="group" id="new">
+  <header class="ghead"><h2>Faces you haven’t drawn yet</h2><p>The tutorial’s five new faces, the curious face, rapt (the game’s first move; my version is in the original set, and yours shows curious for now), and hysterics (which borrows your Won face). These have the least reference from you, so they’re the most useful to draw. The big picture is my stand-in, made from your strokes.</p></header>
+
+  <article class="entry todo" id="impatient">
+    <div class="art">
+      <figure class="still"><img src="art/impatient.png" width="271" height="208" alt="impatient, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now (my stand-in)</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/impatient-talk.png" width="271" height="208" alt="impatient, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/impatient-screen.webp" width="400" height="307" alt="impatient, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>impatient</h3><span class="chip warn">Not drawn yet</span><span class="chip ghost">Test mode: IMPATIENT</span></div>
+      <p class="brief">The very first face anyone sees. In the tutorial the monitor flickers on and he’s already glaring out of the screen at the player, his CADDY, who is late with his gear: “Hurry up. Hurry up. Did you bring the board?” He’s the boss, he’s bored of waiting, and he wants his kit plugged in now. It comes back every time he’s waiting on the player, so it needs to be clearly annoyed without being angry.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>The tutorial’s opening line; whenever he waits for the next piece of kit (“The HAND. Plug it in.”, “The DECK. Next to the HAND.”); “Refresh your garbage this time.”; and when the HAND is full of useless prompts (“Can you not load some better prompts?”)</dd></div>
+        <div><dt>Eyes</dt><dd>On the player, flicking down to the board every few seconds</dd></div>
+        <div><dt>Lasts</dt><dd>Many seconds at a time, and over and over through the tutorial</dd></div>
+        <div><dt>Talks</dt><dd>A lot</dd></div>
+        <div><dt>My stand-in</dt><dd>Heavy lids tilted down toward the nose, a tight mouth pushed to one side</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry todo" id="skeptical">
+    <div class="art">
+      <figure class="still"><img src="art/skeptical.png" width="271" height="208" alt="skeptical, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now (my stand-in)</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/skeptical-talk.png" width="271" height="208" alt="skeptical, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/skeptical-screen.webp" width="400" height="307" alt="skeptical, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>skeptical</h3><span class="chip warn">Not drawn yet</span><span class="chip ghost">Test mode: SKEPTICAL</span></div>
+      <p class="brief">His “Really?” face. One brow shot right up, the other flat, eyes on the player, mouth a flat or wry line. He can’t believe how slow and dim his CADDY is, and he’s saying so.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>In the tutorial: “Do you really think I’m going to need that one soon?” (the player kept a useless prompt), “I can see you’ve only got one prompt that does anything, just send it to me.”, and his nags while he waits (“The board. It goes on the table.”, “It’s the flat one. With the prompts on it.”, “The garbage has to go somewhere.”)</dd></div>
+        <div><dt>Eyes</dt><dd>On the player</dd></div>
+        <div><dt>Lasts</dt><dd>A few seconds, while he talks</dd></div>
+        <div><dt>Talks</dt><dd>Yes</dd></div>
+        <div class="wide"><dt>My stand-in</dt><dd>Your Draw brow on one eye, your Promotion mistake arch raised high on the other, a short mouth pushed to one side</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry todo" id="swear">
+    <div class="art">
+      <figure class="still"><img src="art/swear.png" width="271" height="208" alt="swear, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now (my stand-in)</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/swear-talk.png" width="271" height="208" alt="swear, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/swear-screen.webp" width="400" height="307" alt="swear, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>swear</h3><span class="chip warn">Not drawn yet</span><span class="chip ghost">Test mode: SWEAR</span></div>
+      <p class="brief">Furious, mid-rant, swearing in robot symbols. His kind swear in characters like $&amp;#!, and it sounds like gears grinding in his mouth. Brows slammed down, mouth a big jagged shout, the red vein throbbing. This is him at his most childish: it’s his own fault the Bin isn’t hooked up, but it’s definitely the CADDY’s fault.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>Tutorial turn 2, when only one prompt sideloads: “Did you only pull one new prompt from the DECK? $&amp;#!$ #&amp;$#! @!$#&amp;, you forgot to hook up the Bin!”</dd></div>
+        <div><dt>Eyes</dt><dd>On the player</dd></div>
+        <div><dt>Lasts</dt><dd>A few seconds, talking the whole time</dd></div>
+        <div><dt>Talks</dt><dd>Yes: the talking frame is gritted teeth</dd></div>
+        <div class="wide"><dt>My stand-in</dt><dd>Your Big drop brows pressed down onto the eyes, a big open shout, gritted teeth when talking, and a vein in marker ticks</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry todo" id="blank">
+    <div class="art">
+      <figure class="still"><img src="art/blank.png" width="271" height="208" alt="blank, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now (my stand-in)</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/blank-talk.png" width="271" height="208" alt="blank, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/blank-screen.webp" width="400" height="307" alt="blank, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>blank</h3><span class="chip warn">Not drawn yet</span><span class="chip ghost">Test mode: BLANK</span></div>
+      <p class="brief">Processing something too stupid to be true. A wide, empty, dead-eyed stare with nothing going on behind it, then two slow, deliberate blinks. It’s the calm before the storm: in the tutorial it always turns into something else (a stare and a swear, or hysterical laughter).</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>Tutorial turn 2, staring at the single prompt that sideloaded before he looks up at the player; and when the opponent blunders its queen: he stares blankly, blinks, stares, blinks, then bursts out laughing</dd></div>
+        <div><dt>Eyes</dt><dd>Wide and empty, on the prompt or the board</dd></div>
+        <div><dt>Lasts</dt><dd>About two seconds</dd></div>
+        <div><dt>Talks</dt><dd>Not in the tutorial, but give it a talking mouth anyway</dd></div>
+        <div><dt>My stand-in</dt><dd>No brows, small round pupils with no highlight, your Promotion mistake dash for a mouth</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry todo" id="panic">
+    <div class="art">
+      <figure class="still"><img src="art/panic.png" width="271" height="208" alt="panic, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now (my stand-in)</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/panic-talk.png" width="271" height="208" alt="panic, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/panic-screen.webp" width="400" height="307" alt="panic, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>panic</h3><span class="chip warn">Not drawn yet</span><span class="chip ghost">Test mode: PANIC</span></div>
+      <p class="brief">Total panic. Every prompt in his HAND is useless, and he doesn’t know what to do. Scared, sweating, the whole face shaking side to side while he says “No... no no no”, “no no no no no” over and over until the player finds the Short Circuit button. It should be funny rather than pitiful: a big baby having a meltdown.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>Tutorial turn 5: a dead HAND, until the player sends Short Circuit (then it’s zapped, then crying)</dd></div>
+        <div><dt>Eyes</dt><dd>Darting about</dd></div>
+        <div><dt>Lasts</dt><dd>As long as the player takes, often 10 to 30 seconds</dd></div>
+        <div><dt>Talks</dt><dd>Yes, the whole time</dd></div>
+        <div class="wide"><dt>Motion</dt><dd>Shakes side to side with sweat flying off. On a phone the board is showing, so this is mostly seen on the tiny taskbar face and must read at that size</dd></div>
+        <div><dt>My stand-in</dt><dd>Your Losing brows, tiny pupils, your Lost strain marks, a wobbly open mouth</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry todo" id="curious">
+    <div class="art">
+      <figure class="still"><img src="art/curious.png" width="271" height="208" alt="curious, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now (my stand-in)</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/curious-talk.png" width="271" height="208" alt="curious, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/curious-screen.webp" width="400" height="307" alt="curious, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>curious</h3><span class="chip warn">Not drawn yet</span><span class="chip ghost">Test mode: none (PEER shows the pressed-to-the-glass pose)</span></div>
+      <p class="brief">A bright, nosy “ooh, what’s this?”. He’s snooping. In the tutorial, when the opponent’s DECK and Bin plug themselves in below his monitor, he presses his face against the corner of the glass to get as close a look as he can (see “Pressed to the glass” below). In games it flashes for a second when a word’s definition pops up on his screen under him.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>Tutorial: watching the opponent’s drives connect. Games: a word’s definition opening on his screen</dd></div>
+        <div><dt>Eyes</dt><dd>Down, on whatever he’s peering at</dd></div>
+        <div><dt>Lasts</dt><dd>A few seconds in the tutorial; one second in games</dd></div>
+        <div><dt>Talks</dt><dd>Not at the moment</dd></div>
+        <div><dt>My stand-in</dt><dd>Your Won brows with one raised higher, and your Promotion excitement “o”, smaller</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry todo" id="rapt">
+    <div class="art">
+      <figure class="still"><img src="art/rapt.png" width="271" height="208" alt="rapt, my version in the original set" loading="lazy" decoding="async"><figcaption>My version (the original set); your set shows curious for now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/rapt-talk.png" width="271" height="208" alt="rapt, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/rapt-screen.webp" width="400" height="307" alt="rapt, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>rapt</h3><span class="chip warn">Not drawn yet</span><span class="chip ghost">Test mode: RAPT</span></div>
+      <p class="brief">The game is on, and he’s hooked. The first move lands on the board and the whole world disappears for him: his eyes go wide and glaze over a little, fixed on the board, the look of an addict getting his fix. Surprise and hunger, not joy: it isn’t your Promotion excitement (that’s him beside himself choosing a piece), it’s quieter and more gone than that.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>The tutorial, the moment the opponent makes the game’s first move</dd></div>
+        <div><dt>Eyes</dt><dd>On the board, wide and glazed</dd></div>
+        <div><dt>Lasts</dt><dd>A second or two, until his next line</dd></div>
+        <div><dt>Talks</dt><dd>Not at the moment</dd></div>
+        <div class="wide"><dt>My version</dt><dd>In the original set: brows raised, the inner ends highest; wide eyes with huge pupils, each with a dark ring in it (the glaze); his jaw dropped; flushed cheeks. On screen he leans in a little and the pupils swell and ease</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="hysterics">
+    <div class="art">
+      <figure class="still"><img src="art/hysterics.png" width="271" height="208" alt="hysterics, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now (my stand-in)</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/hysterics-talk.png" width="271" height="208" alt="hysterics, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/hysterics-screen.webp" width="400" height="307" alt="hysterics, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>hysterics</h3><span class="chip">Your sheet: Won (borrowed)</span><span class="chip ghost">Test mode: WIN</span></div>
+      <p class="brief">Laughing his head off, completely out of control, the instant the player checkmates the opponent, and in the tutorial when the opponent blunders its queen. It’s gloating, not sharing the joy: head thrown back, tears of laughter flying. At the moment it borrows your Won face (which is also the beam that follows it), with tears added and the whole face rocking. Its own drawing would let the two feel different: this one is a helpless guffaw, the beam is a smug glow.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>The instant the player wins, and the tutorial’s queen blunder (after the blank stare)</dd></div>
+        <div><dt>Eyes</dt><dd>Screwed shut or rolling, whatever reads as helpless laughter</dd></div>
+        <div><dt>Lasts</dt><dd>About three seconds, then cuts to beam</dd></div>
+        <div><dt>Talks</dt><dd>No, but a laughing mouth that opens and shuts would look great</dd></div>
+        <div><dt>Motion</dt><dd>Rocks hard as tears of laughter fly off sideways, with a victory fanfare</dd></div>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section class="group" id="parts">
+  <header class="ghead"><h2>Moving parts you haven’t drawn yet</h2><p>Things the game does on top of every face. At the moment they’re my versions in your style.</p></header>
+  <div class="parts">
+    <article class="part wide" id="talking">
+      <div class="partpics"><figure><img src="art/smile.png" width="271" height="208" alt="smile" loading="lazy" decoding="async"><figcaption>Mouth</figcaption></figure><figure><img src="art/smile-talk.png" width="271" height="208" alt="smile, talking" loading="lazy" decoding="async"><figcaption>Talking</figcaption></figure></div>
+      <div class="partwords"><h3>Talking mouths</h3><p>He talks a lot now (in robot babble, with subtitles), and any face can talk: the mouth flips between its drawn shape and a talking shape about eight times a second. At the moment most faces open to an “o” in your marker, smile and laugh open to a D shape, happy and beam open wider, cry opens to a sob and swear to gritted teeth. Every face below shows its talking frame. What would help: a talking mouth for each face, or a few that I can share between faces.</p></div>
+    </article>
+    <article class="part wide" id="blink">
+      <div class="partpics"><figure><img src="art/blink.png" width="704" height="211" alt="smile blinking: open, closing, shut" loading="lazy" decoding="async"></figure></div>
+      <div class="partwords"><h3>Blinks</h3><p>He blinks every few seconds, and in the tutorial he does slow, deliberate blinks. At the moment the eyes just squash flat. What would help: a closed eye (or a lid coming down) in your style.</p></div>
+    </article>
+    <article class="part" id="drops">
+      <div class="partpics"><figure><img src="art/cry.png" width="271" height="208" alt="cry" loading="lazy" decoding="async"><figcaption>Tears (cry)</figcaption></figure><figure><img src="art/hysterics.png" width="271" height="208" alt="hysterics" loading="lazy" decoding="async"><figcaption>Tears of laughter</figcaption></figure><figure><img src="art/panic.png" width="271" height="208" alt="panic" loading="lazy" decoding="async"><figcaption>Sweat (panic)</figcaption></figure></div>
+      <div class="partwords"><h3>Tears, tears of laughter and sweat</h3><p>The game adds these and moves them: tears well up and fall when he cries, tears of laughter fly off sideways in hysterics, and sweat flies off in panic and promotion excitement. They’re drawn in light blue. At the moment they’re plain chunky drops. What would help: a drop or two in your style, and a splash of sweat.</p></div>
+    </article>
+    <article class="part" id="vein">
+      <div class="partpics"><figure><img src="art/swear.png" width="271" height="208" alt="swear, with the vein" loading="lazy" decoding="async"><figcaption>Swear</figcaption></figure></div>
+      <div class="partwords"><h3>The swearing vein</h3><p>The throbbing cartoon vein that pops up when he swears, drawn in red. Mine is four chunky marker ticks. What would help: your version.</p></div>
+    </article>
+    <article class="part wide" id="peer">
+      <div class="partpics"><figure><img src="art/peer.webp" width="720" height="809" alt="his face pressed into the corner of the screen, peering at the opponent’s drives" loading="lazy" decoding="async"></figure></div>
+      <div class="partwords"><h3>Pressed to the glass</h3><p>In the tutorial, when the opponent’s drives plug themselves in below his monitor, his whole face slides into the corner of the screen and tilts, as if he’s pressing his face against the glass to see down to them. At the moment it’s the curious face, moved and skewed. What would help: if you’d like to draw him squished against the glass, I’d love that. Otherwise, a note on how you’d want it to look.</p></div>
+    </article>
+    <article class="part wide stack" id="gaze">
+      <div class="partpics"><figure><img src="art/gaze-smile.png" width="636" height="551" alt="smile looking in nine directions" loading="lazy" decoding="async"></figure><figure><img src="art/gaze-angry.png" width="636" height="551" alt="angry looking in nine directions" loading="lazy" decoding="async"></figure></div>
+      <div class="partwords"><h3>Eyes that look anywhere</h3><p>The game points his eyes wherever he’s looking: at the board, at the prompt that just loaded, at the opponent’s drives, or straight out of the screen at the player (the tutorial does this a lot, and only your Promotion mistake face shows it). Each pupil is your solid half-moon, cut to the inside of the eye, so it sits on the side he’s looking toward, becomes a band when he looks straight out, and keeps your little square highlight. Both eyes always point the same way. Each face keeps the direction you drew as its own look. What would help: one pair of eyes drawn looking in these nine directions, so I can match your half-moons exactly.</p></div>
+    </article>
+    <article class="part wide stack" id="small">
+      <div class="partpics"><figure><img src="art/taskbar.png" width="870" height="139" alt="the taskbar face in eight expressions, enlarged three times" loading="lazy" decoding="async"></figure><figure><img src="art/sizes.webp" width="918" height="442" alt="the face on a computer, on a small phone and on the taskbar, at actual size" loading="lazy" decoding="async"></figure></div>
+      <div class="partwords"><h3>The tiny face on the taskbar</h3><p>The face has to work from the full monitor down to the button on his screen’s taskbar, about 16 pixels across. On phones the board and his face are separate screens, so many quick reactions (and the whole panic) are only seen on that tiny face. At the moment it’s the same drawing, small, with the strokes thicker and no highlight. The first picture is the tiny face enlarged three times; the second shows it to scale next to his screen on a computer and on a small phone. What would help: tell me which bits matter most at that size, or draw a simplified version of the key faces.</p></div>
+    </article>
+  </div>
+</section>
+
+<section class="group" id="resting">
+  <header class="ghead"><h2>From your sheet: resting moods</h2><p>How he feels about the game. One of these is on screen almost all the time, often for many turns in a row, so they need to wear well. His resting faces turn their eyes part of the way toward the board.</p></header>
+
+  <article class="entry" id="focus">
+    <div class="art">
+      <figure class="still"><img src="art/focus.png" width="271" height="208" alt="focus, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/focus-talk.png" width="271" height="208" alt="focus, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/focus-screen.webp" width="400" height="307" alt="focus, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>focus</h3><span class="chip">Your sheet: Concentration</span><span class="chip ghost">Test mode: FOCUS</span></div>
+      <p class="brief">His resting face at the start of every game, and whenever an endgame is lopsided enough that it’s just a matter of finishing it off (either way). Calm, earnest, total concentration, tongue poking out like a kid colouring inside the lines. He thinks he’s a genius, and this is him being one.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>From the start of each game until the position first pleases or worries him; lopsided endgames; tutorial turn 3</dd></div>
+        <div><dt>Eyes</dt><dd>On the board</dd></div>
+        <div><dt>Lasts</dt><dd>Many turns</dd></div>
+        <div><dt>Changed</dt><dd>The pupils turn part of the way toward the board</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="smile">
+    <div class="art">
+      <figure class="still"><img src="art/smile.png" width="271" height="208" alt="smile, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/smile-talk.png" width="271" height="208" alt="smile, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/smile-screen.webp" width="400" height="307" alt="smile, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>smile</h3><span class="chip">Your sheet: Normal</span><span class="chip ghost">Test mode: SMILE</span></div>
+      <p class="brief">His everyday face once a game has got going and the position is roughly even. Content, a bit pleased with himself, the face he can wear for minutes without getting tiresome.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>An even position, once the game has first swung one way or the other</dd></div>
+        <div><dt>Eyes</dt><dd>On the board</dd></div>
+        <div><dt>Lasts</dt><dd>As long as the game stays even</dd></div>
+        <div><dt>Changed</dt><dd>The pupils turn part of the way toward the board</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="happy">
+    <div class="art">
+      <figure class="still"><img src="art/happy.png" width="271" height="208" alt="happy, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/happy-talk.png" width="271" height="208" alt="happy, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/happy-screen.webp" width="400" height="307" alt="happy, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>happy</h3><span class="chip">Your sheet: Winning</span><span class="chip ghost">Test mode: HAPPY</span></div>
+      <p class="brief">His resting face while he’s comfortably ahead. Warm, confident, and already quietly taking the credit. A clear step up from the smile, but well short of the winning grin.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>Comfortably ahead (about a pawn and a half or more)</dd></div>
+        <div><dt>Eyes</dt><dd>On the board</dd></div>
+        <div><dt>Lasts</dt><dd>Many turns</dd></div>
+        <div><dt>Changed</dt><dd>The pupils turn part of the way toward the board</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="scared">
+    <div class="art">
+      <figure class="still"><img src="art/scared.png" width="271" height="208" alt="scared, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/scared-talk.png" width="271" height="208" alt="scared, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/scared-screen.webp" width="400" height="307" alt="scared, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>scared</h3><span class="chip">Your sheet: Losing</span><span class="chip ghost">Test mode: SCARED</span></div>
+      <p class="brief">His resting face while he’s clearly behind. A steady, low-level “we’re in trouble” nervousness, worried rather than cross, and milder than the panic or the crying.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>Clearly behind (about a pawn and a half or more)</dd></div>
+        <div><dt>Eyes</dt><dd>On the board</dd></div>
+        <div><dt>Lasts</dt><dd>Many turns, until the opponent slips or the game ends</dd></div>
+        <div><dt>Changed</dt><dd>The pupils turn part of the way toward the board</dd></div>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section class="group" id="reactions">
+  <header class="ghead"><h2>From your sheet: quick reactions</h2><p>A flash of a second or two when a move shifts the evaluation bar, then back to the resting mood. The tutorial also uses them for his lines.</p></header>
+
+  <article class="entry" id="smirk">
+    <div class="art">
+      <figure class="still"><img src="art/smirk.png" width="271" height="208" alt="smirk, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/smirk-talk.png" width="271" height="208" alt="smirk, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/smirk-screen.webp" width="400" height="307" alt="smirk, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>smirk</h3><span class="chip">Your sheet: Gain</span><span class="chip ghost">Test mode: SMUG</span></div>
+      <p class="brief">A quick, smug “heh, they slipped” when the opponent’s move turns out a bit worse than their best. He takes it as proof of his own brilliance.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>Just after the opponent’s move, when it was a bit worse than their best. Tutorial: “Now we’re talking. I’ll enter this one now.”</dd></div>
+        <div><dt>Eyes</dt><dd>On the board</dd></div>
+        <div><dt>Lasts</dt><dd>1.5 seconds</dd></div>
+        <div><dt>Motion</dt><dd>Still, with a bright two-note chirp</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="laugh">
+    <div class="art">
+      <figure class="still"><img src="art/laugh.png" width="271" height="208" alt="laugh, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/laugh-talk.png" width="271" height="208" alt="laugh, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/laugh-screen.webp" width="400" height="307" alt="laugh, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>laugh</h3><span class="chip">Your sheet: Big gain</span><span class="chip ghost">Test mode: LAUGH</span></div>
+      <p class="brief">Cracking up for about two seconds when the opponent has made a real blunder. Gleeful and cheeky, a notch below the helpless hysterics saved for winning.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>Just after the opponent’s move, when it was a real blunder</dd></div>
+        <div><dt>Eyes</dt><dd>Your drawing’s</dd></div>
+        <div><dt>Lasts</dt><dd>About 2 seconds</dd></div>
+        <div><dt>Motion</dt><dd>Bounces, with a little 8-bit fanfare</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="drop">
+    <div class="art">
+      <figure class="still"><img src="art/drop.png" width="271" height="208" alt="drop, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/drop-talk.png" width="271" height="208" alt="drop, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/drop-screen.webp" width="400" height="307" alt="drop, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>drop</h3><span class="chip">Your sheet: Drop</span><span class="chip ghost">Test mode: DROP</span></div>
+      <p class="brief">A deflated, sulky “oh… great” when one of the player’s prompts forces a somewhat worse move. He blames the CADDY, but mildly. In the tutorial it’s his long-suffering face.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>Just after the player’s move, when their prompt forced a somewhat worse move. Tutorial: “Oh come on, they’re moving now...”, “Finally... Okay, I’m entering it now.”, “Any day now.”</dd></div>
+        <div><dt>Eyes</dt><dd>On the board</dd></div>
+        <div><dt>Lasts</dt><dd>1.3 seconds</dd></div>
+        <div><dt>Changed</dt><dd>The pupils turn part of the way toward the board</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="angry">
+    <div class="art">
+      <figure class="still"><img src="art/angry.png" width="271" height="208" alt="angry, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/angry-talk.png" width="271" height="208" alt="angry, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/angry-screen.webp" width="400" height="307" alt="angry, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>angry</h3><span class="chip">Your sheet: Big drop</span><span class="chip ghost">Test mode: ANGRY</span></div>
+      <p class="brief">Hot and cross for about two seconds when one of the player’s prompts forces a clearly bad move and the bar plunges. In the tutorial it’s how he rounds on his CADDY.</p>
+      <dl class="facts">
+        <div class="wide"><dt>When</dt><dd>Just after the player’s move, when their prompt forced a clearly bad move. Tutorial: “Look, they’ve already got a prompt loaded up, hurry up...”, “Did you only pull one new prompt from the DECK?”, “Bin. Now.”</dd></div>
+        <div><dt>Eyes</dt><dd>Glaring at the board, or at the player in the tutorial</dd></div>
+        <div><dt>Lasts</dt><dd>About 2 seconds</dd></div>
+        <div><dt>Changed</dt><dd>The pupils turn part of the way toward the board</dd></div>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section class="group" id="moments">
+  <header class="ghead"><h2>From your sheet: special moments</h2><p>Faces tied to one particular thing happening in the game rather than to the score.</p></header>
+
+  <article class="entry" id="zapped">
+    <div class="art">
+      <figure class="still"><img src="art/zapped.png" width="271" height="208" alt="zapped, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/zapped-talk.png" width="271" height="208" alt="zapped, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/zapped-screen.webp" width="400" height="307" alt="zapped, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>zapped</h3><span class="chip">Your sheet: Zapped</span><span class="chip ghost">Test mode: ZAPPED</span></div>
+      <p class="brief">A jolt of electricity when the player has to hit Short Circuit because no prompt has a legal move. Fried and scrambled: a malfunction rather than a feeling.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>The player sends Short Circuit. Tutorial turn 5, straight after the panic</dd></div>
+        <div><dt>Eyes</dt><dd>Your drawing’s</dd></div>
+        <div><dt>Lasts</dt><dd>About 2 seconds</dd></div>
+        <div><dt>Motion</dt><dd>A sharp flinch and an electric crackle</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="maniac">
+    <div class="art">
+      <figure class="still"><img src="art/maniac.png" width="271" height="208" alt="maniac, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/maniac-talk.png" width="271" height="208" alt="maniac, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/maniac-screen.webp" width="400" height="307" alt="maniac, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>maniac</h3><span class="chip">Your sheet: Promotion excitement</span><span class="chip ghost">Test mode: PROMOTE</span></div>
+      <p class="brief">Beside himself while the player chooses what to promote a pawn into. Giddy, breath-held, “ooh, which one?!” excitement. In the tutorial it’s his flash of glee when the opponent makes the first move: the game is on.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>While the player chooses a promotion; the tutorial’s first move</dd></div>
+        <div><dt>Eyes</dt><dd>On the choices</dd></div>
+        <div><dt>Lasts</dt><dd>As long as the player takes</dd></div>
+        <div><dt>Motion</dt><dd>A nonstop tremble, with beads of sweat flicking off</dd></div>
+        <div><dt>Changed</dt><dd>Sweat added</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="stare">
+    <div class="art">
+      <figure class="still"><img src="art/stare.png" width="271" height="208" alt="stare, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/stare-talk.png" width="271" height="208" alt="stare, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/stare-screen.webp" width="400" height="307" alt="stare, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>stare</h3><span class="chip">Your sheet: Promotion mistake</span><span class="chip ghost">Test mode: SERIOUS</span></div>
+      <p class="brief">A flat, deadpan “are you serious?” straight out of the screen at the player. After a bad promotion, and in the tutorial it’s his dead stare before “$&amp;@# you” when the player refreshes nothing.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>Right after the player promotes to a clearly worse piece; tutorial turn 2</dd></div>
+        <div><dt>Eyes</dt><dd>Straight out at the player (the only face on your sheet that does this)</dd></div>
+        <div><dt>Lasts</dt><dd>About 2 seconds</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="confused">
+    <div class="art">
+      <figure class="still"><img src="art/confused.png" width="271" height="208" alt="confused, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/confused-talk.png" width="271" height="208" alt="confused, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/confused-screen.webp" width="400" height="307" alt="confused, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>confused</h3><span class="chip">Your sheet: Confused</span><span class="chip ghost">Test mode: CONFUSED</span></div>
+      <p class="brief">A quiet “huh… what did they just do?” that fades in over whatever face is showing while the player points at or holds the prompt “Play like the opponent.”, as if he’s trying to remember the opponent’s last move.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>While the player points at, selects or holds “Play like the opponent.”</dd></div>
+        <div><dt>Eyes</dt><dd>On the board</dd></div>
+        <div><dt>Lasts</dt><dd>Fades in over a quarter of a second, and out half a second after</dd></div>
+        <div class="wide"><dt>Changed</dt><dd>Confused and Draw were labelled the wrong way round last time: the squiggle mouth is this one</dd></div>
+      </dl>
+    </div>
+  </article>
+</section>
+
+<section class="group" id="over">
+  <header class="ghead"><h2>From your sheet: game over</h2><p>The face he keeps once the game ends, until a new game starts. The player may sit looking at these for minutes.</p></header>
+
+  <article class="entry" id="beam">
+    <div class="art">
+      <figure class="still"><img src="art/beam.png" width="271" height="208" alt="beam, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/beam-talk.png" width="271" height="208" alt="beam, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/beam-screen.webp" width="400" height="307" alt="beam, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>beam</h3><span class="chip">Your sheet: Won</span><span class="chip ghost">Test mode: none (plays after WIN)</span></div>
+      <p class="brief">His big, proud “I’m so good at chess” grin, held until the next game once the laughing fit dies down. Also a quick flash when the player promotes to the best piece, and in the tutorial when he takes back the queen and gloats: “I’m so good at chess.”</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>After a win; a good promotion; the tutorial’s queen recapture</dd></div>
+        <div><dt>Eyes</dt><dd>Up</dd></div>
+        <div><dt>Lasts</dt><dd>Until the next game (1.4 seconds after a good promotion)</dd></div>
+        <div><dt>Changed</dt><dd>Your two pupils pointed different ways (one up-right, one up-left); both now point up</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="cry">
+    <div class="art">
+      <figure class="still"><img src="art/cry.png" width="271" height="208" alt="cry, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/cry-talk.png" width="271" height="208" alt="cry, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/cry-screen.webp" width="400" height="307" alt="cry, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>cry</h3><span class="chip">Your sheet: Lost</span><span class="chip ghost">Test mode: LOSS</span></div>
+      <p class="brief">His face for the rest of the game after he’s checkmated. Tears welling up and dripping, sobbing quietly. In the tutorial he sobs after the Short Circuit while the opponent takes his queen.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>After a loss; the end of the tutorial</dd></div>
+        <div><dt>Eyes</dt><dd>Your drawing’s</dd></div>
+        <div><dt>Lasts</dt><dd>Until the next game</dd></div>
+        <div><dt>Motion</dt><dd>A gentle sobbing heave as tears well up and fall, with a sad falling tune</dd></div>
+        <div><dt>Changed</dt><dd>Your dashes kept, with drops that well up and fall</dd></div>
+      </dl>
+    </div>
+  </article>
+
+  <article class="entry" id="meh">
+    <div class="art">
+      <figure class="still"><img src="art/meh.png" width="271" height="208" alt="meh, as it is in the game now" loading="lazy" decoding="async"><figcaption>In the game now</figcaption></figure>
+      <div class="others">
+        <figure><img src="art/meh-talk.png" width="271" height="208" alt="meh, talking" loading="lazy" decoding="async"><figcaption>Talking frame</figcaption></figure>
+        <figure class="mon"><img src="art/meh-screen.webp" width="400" height="307" alt="meh, on the monitor" loading="lazy" decoding="async"><figcaption>On the monitor</figcaption></figure>
+      </div>
+    </div>
+    <div class="words">
+      <div class="nameline"><h3>meh</h3><span class="chip">Your sheet: Draw</span><span class="chip ghost">Test mode: DRAW</span></div>
+      <p class="brief">His face for the rest of the game after a draw. A deadpan, unimpressed “meh, is that it?”: dismissive rather than sad, cross or smug.</p>
+      <dl class="facts">
+        <div><dt>When</dt><dd>After a draw</dd></div>
+        <div><dt>Eyes</dt><dd>Your drawing’s</dd></div>
+        <div><dt>Lasts</dt><dd>Until the next game</dd></div>
+        <div><dt>Motion</dt><dd>Still, with two flat notes</dd></div>
+        <div class="wide"><dt>Changed</dt><dd>Draw and Confused were labelled the wrong way round last time: the straight slanted mouth is this one</dd></div>
+      </dl>
+    </div>
+  </article>
+</section>
+
+  <section class="watch" id="lookalikes">
+    <header class="ghead"><h2>Look-alikes</h2><p>Faces close enough to be mistaken for each other at a glance, especially at the taskbar’s size. Worth pulling apart if you can.</p></header>
+    <ul>
+      <li><div class="pair"><img src="art/meh.png" width="271" height="208" alt="meh" loading="lazy" decoding="async"><img src="art/angry.png" width="271" height="208" alt="angry" loading="lazy" decoding="async"></div><div><b>meh</b> and <b>angry</b>: the same slanted dash of a mouth, so only the brows tell them apart.</div></li>
+      <li><div class="pair"><img src="art/stare.png" width="271" height="208" alt="stare" loading="lazy" decoding="async"><img src="art/zapped.png" width="271" height="208" alt="zapped" loading="lazy" decoding="async"></div><div><b>stare</b>, <b>zapped</b> and <b>blank</b>: all have a short flat mouth.</div></li>
+      <li><div class="pair"><img src="art/smirk.png" width="271" height="208" alt="smirk" loading="lazy" decoding="async"><img src="art/laugh.png" width="271" height="208" alt="laugh" loading="lazy" decoding="async"></div><div><b>smirk</b> and <b>laugh</b>: similar hooked mouths, one for a small slip and one for a big blunder.</div></li>
+      <li><div class="pair"><img src="art/impatient.png" width="271" height="208" alt="impatient" loading="lazy" decoding="async"><img src="art/skeptical.png" width="271" height="208" alt="skeptical" loading="lazy" decoding="async"></div><div><b>impatient</b> and <b>skeptical</b>: both look straight at the player and often follow each other in the tutorial.</div></li>
+    </ul>
+    <p class="foot">Timings and triggers are taken from the game. “Test mode” is the button to press in AI Face Test Mode, on the game’s Debug screen, to see a face in the game.</p>
+  </section>
+</main>
+</body>
+</html>
