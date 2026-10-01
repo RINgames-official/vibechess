@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Vibe Chess roadmap</title>
+<script>try { var s = localStorage; if (s.getItem('vibechess-pass') || s.getItem('vibechess-test-access') || s.getItem('vibechess-access')) document.documentElement.classList.add('returning'); } catch (e) {}</script>
+<style>
+:root {
+  --bg: #f5f6f8; --field: #ffffff; --ink: #14161a; --muted: #6a6f78; --line: #dcdfe4; --ring: rgba(20, 22, 26, 0.12);
+  --btn: #14161a; --btn-ink: #ffffff; --bad: #c8372d; color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0e1013; --field: #171a1f; --ink: #eef0f3; --muted: #9aa0a9; --line: #2a2e35; --ring: rgba(238, 240, 243, 0.14);
+    --btn: #eef0f3; --btn-ink: #0e1013; --bad: #ff7b70; }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { display: grid; place-items: center; padding: 24px; background: var(--bg); color: var(--ink);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+form { width: min(100%, 340px); display: flex; flex-direction: column; gap: 8px; }
+label { font-size: 14px; font-weight: 600; color: var(--muted); padding-left: 18px; }
+.pill { position: relative; display: flex; align-items: center; height: 54px; padding: 0 6px 0 18px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--field); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px -12px rgba(0, 0, 0, 0.18); transition: border-color 0.15s, box-shadow 0.15s; }
+.pill:focus-within { border-color: var(--ink); box-shadow: 0 0 0 4px var(--ring), 0 8px 24px -12px rgba(0, 0, 0, 0.18); }
+input { flex: 1; min-width: 0; height: 100%; padding: 0; border: 0; background: transparent; color: var(--ink); font: inherit; font-size: 17px; letter-spacing: 0.01em; outline: none; }
+button { flex: none; display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 0; border-radius: 50%; background: var(--btn); color: var(--btn-ink); cursor: pointer; transition: transform 0.12s, opacity 0.12s; }
+button:hover { transform: translateX(1px); }
+button:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+button:disabled { cursor: default; }
+button svg { width: 20px; height: 20px; }
+button.busy svg { display: none; }
+button.busy::after { content: ""; width: 18px; height: 18px; border: 2px solid currentColor; border-right-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
+/* a device that has been let in before sees a spinner while the game decrypts, never the form */
+.loading { display: none; width: 28px; height: 28px; border: 2.5px solid var(--muted); border-right-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; }
+html.returning .loading { display: block; }
+html.returning form { display: none; }
+.msg { min-height: 1.3em; margin: 2px 0 0; padding-left: 18px; font-size: 13.5px; color: var(--bad); }
+.msg.note { color: var(--muted); }
+.wrong .pill { border-color: var(--bad); animation: shake 0.32s; }
+@keyframes shake { 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(3px); } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .wrong .pill, button.busy::after, .loading { animation: none; } }
+</style>
+</head>
+<body>
+<div class="loading" role="status" aria-label="Loading"></div>
+<form id="gate" autocomplete="off">
+  <label for="code">Access code</label>
+  <div class="pill">
+    <input id="code" name="code" type="text" autocapitalize="none" autocorrect="off" spellcheck="false" required>
+    <button id="go" type="submit" aria-label="Enter"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  </div>
+  <p class="msg" id="msg" role="status" aria-live="polite"></p>
+</form>
+<script>
+(function () {
+  // what this gate holds: the level salt, a slot per level that opens the page (its content keys wrapped, AES-KW, with the
+  // level's key; the first opens the page) and a check per level that is recognised but not let in
+  var CFG = {"salt":"ZIs2nC5g4e1V2hYBo/4cLA==","iter":400000,"site":"roadmap","game":"roadmap/app.bin","book":"","text":"","slots":{"tester":["exvVVspQXyVMwkFj6Z8F0W7dlE+zF6Iv/8augqDRxDVqKcN0DMd9tw=="],"developer":["N3s8oZofeAz8m8shk5PVn7z8Tnaj8qHfkaUDlTHu1MjYLzjjdlfDgA==","HwzL73aDRLLU58/eYszO0GAnHzPkcC1GrIPHwlkfmWvnSMX1fxl2xA=="]},"checks":{}};
+  var PASS = 'vibechess-pass', LEGACY = ['vibechess-test-access', 'vibechess-access'], LEVELS = ['developer', 'tester'];
+  var SITE = CFG.site, TEXT = CFG.text, enc = new TextEncoder();
+  var form = document.getElementById('gate'), input = document.getElementById('code'), go = document.getElementById('go'), msg = document.getElementById('msg');
+  function bytes(b64) { var s = atob(b64), out = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) out[i] = s.charCodeAt(i); return out; }
+  function b64(u8) { var s = ''; for (var i = 0; i < u8.length; i++) s += String.fromCharCode(u8[i]); return btoa(s); }
+  function normalise(code) { return code.trim().toLowerCase().split(/\s+/).join('-'); }
+  function lazy(make) { var p = null; return function () { return p || (p = make()); }; }
+  // the game starts downloading at once, while the code is typed or the remembered key is tried
+  var gameFile = lazy(function () {
+    var p = fetch(CFG.game).then(function (r) { if (!r.ok) throw new Error('offline'); return r.arrayBuffer(); }, function () { throw new Error('offline'); });
+    p.catch(function () {});
+    return p;
+  });
+  // the published text edits (the test site and the editor only): fetched fresh each visit, alongside the game
+  var textFile = lazy(function () {
+    var p = !TEXT ? Promise.resolve(null) : fetch(TEXT + '?t=' + Date.now(), { cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) return null;   // none published
+      if (!r.ok) throw new Error('it couldn’t be downloaded (HTTP ' + r.status + ')');
+      return r.arrayBuffer();
+    }, function () { throw new Error('it couldn’t be downloaded'); });
+    p.catch(function () {});
+    return p;
+  });
+  function inflate(buf) { return new Response(new Blob([buf]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text(); }
+  // the edits for the game to apply before it draws anything (window.vcTextOverrides); a file that can't be read, or
+  // hasn't come TEXT_WAIT ms after the code is taken, is ignored (the game opens without it), and window.vcTextNote says
+  // why (the Debug screen shows it)
+  var TEXT_WAIT = 5000;
+  function readText(key) {
+    window.vcTextOverrides = null; window.vcTextNote = null;
+    var late = new Promise(function (resolve) { setTimeout(function () { resolve('late'); }, TEXT_WAIT); });
+    return Promise.race([textFile(), late]).then(function (buf) {
+      if (buf === 'late') throw new Error('it took too long to download');
+      if (!buf) return;
+      var b = new Uint8Array(buf);
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(0, 12) }, key, b.slice(12)).then(inflate, function () {
+        throw new Error('it couldn’t be decrypted');
+      }).then(function (text) {
+        var o = null;
+        try { o = JSON.parse(text); } catch (e) {}
+        if (!o || typeof o !== 'object' || Array.isArray(o)) throw new Error('it isn’t a set of edits');
+        window.vcTextOverrides = o;
+      });
+    }).then(null, function (e) {
+      window.vcTextOverrides = null;
+      window.vcTextNote = TEXT + ' was ignored: ' + (e && e.message && /^it /.test(e.message) ? e.message : 'it couldn’t be read');
+    });
+  }
+
+  // ---- levels ----
+  // the level's key from a code: one PBKDF2 (the same salt for every code and every gate)
+  function levelKey(code) {
+    return crypto.subtle.importKey('raw', enc.encode(normalise(code)), 'PBKDF2', false, ['deriveBits']).then(function (base) {
+      return crypto.subtle.deriveBits({ name: 'PBKDF2', salt: bytes(CFG.salt), iterations: CFG.iter, hash: 'SHA-256' }, base, 256);
+    }).then(function (bits) { return new Uint8Array(bits); });
+  }
+  // what a level's key opens here: { level, keys } (the content keys, unwrapped non-extractable: only the editor's own key
+  // may encrypt, for its undo history), { level, keys: null } for a level that is recognised but not let in, or null
+  function tryLevel(raw, level) {
+    var slot = CFG.slots[level], check = CFG.checks[level];
+    if (slot) {
+      return crypto.subtle.importKey('raw', raw, 'AES-KW', false, ['unwrapKey']).then(function (kw) {
+        return Promise.all(slot.map(function (w, i) {
+          return crypto.subtle.unwrapKey('raw', bytes(w), kw, 'AES-KW', { name: 'AES-GCM' }, false, SITE === 'edit' && i === 0 ? ['encrypt', 'decrypt'] : ['decrypt']);
+        }));
+      }).then(function (keys) { return { level: level, keys: keys }; }, function () { return null; });
+    }
+    if (check) {
+      return crypto.subtle.importKey('raw', raw, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']).then(function (k) {
+        return crypto.subtle.sign('HMAC', k, enc.encode('vibechess level'));
+      }).then(function (sig) {
+        var want = bytes(check), got = new Uint8Array(sig), same = 1;
+        for (var i = 0; i < 16; i++) if (got[i] !== want[i]) same = 0;
+        return same ? { level: level, keys: null } : null;
+      }, function () { return null; });
+    }
+    return Promise.resolve(null);
+  }
+  // which level a key is, the developer's first
+  function confirm(raw) {
+    return tryLevel(raw, LEVELS[0]).then(function (r) { return r || tryLevel(raw, LEVELS[1]); });
+  }
+  // a device's pass: { v: 1, level, key } (the level's key, base64; never the code)
+  function readPass() {
+    try {
+      var p = JSON.parse(localStorage.getItem(PASS));
+      if (p && p.v === 1 && (p.level === 'developer' || p.level === 'tester') && typeof p.key === 'string' && bytes(p.key).length === 32) return p;
+    } catch (e) {}
+    return null;
+  }
+  function removePass() { try { localStorage.removeItem(PASS); } catch (e) {} }
+  function remember(level, raw) {
+    try {
+      var was = readPass();
+      if (level === 'tester' && was && was.level === 'developer') return;   // a developer's pass is never replaced by a tester's
+      localStorage.setItem(PASS, JSON.stringify({ v: 1, level: level, key: b64(raw) }));
+    } catch (e) {}
+  }
+
+  // ---- opening ----
+  function open(html) { document.open(); document.write(html); document.close(); }
+  function broken(e) {
+    document.documentElement.classList.remove('returning');
+    go.disabled = false; go.classList.remove('busy');
+    var m = e && e.message;
+    msg.className = 'msg';
+    msg.textContent = m === 'offline' ? 'The page couldn’t be downloaded. Check your connection and reload.' : 'The page couldn’t be opened. Reload to try again.';
+  }
+  // the page, decrypted with the key the level's slot gave
+  function openWith(res) {
+    var keys = res.keys;
+    return gameFile().then(function (buf) {
+      var b = new Uint8Array(buf);   // a 12-byte IV, then the ciphertext
+      return crypto.subtle.decrypt({ name: 'AES-GCM', iv: b.slice(0, 12) }, keys[0], b.slice(12));
+    }).then(inflate).then(function (text) {   // (the game was compressed before it was encrypted)
+      var html = text, bookKey = Promise.resolve(keys[0]);
+      if (SITE === 'edit') {   // the editor's game starts with a line holding the test site's key and the relay secret
+        var cut = text.indexOf('\n'), head = JSON.parse(text.slice(0, cut));
+        html = text.slice(cut + 1);
+        window.vcEditKey = keys[0];   // the editor's own key (its undo history)
+        window.vcEditRelay = head.relay;
+        bookKey = crypto.subtle.importKey('raw', bytes(head.testKey), 'AES-GCM', false, ['encrypt', 'decrypt']);
+      }
+      if (SITE === 'roadmap') {   // the page takes these two keys and deletes them from window
+        window.vcRoadmapKey = keys[0];
+        if (keys[1]) window.vcRoadmapDevKey = keys[1];
+        window.vcSite = SITE; window.vcLevel = res.level;
+        return html;
+      }
+      return bookKey.then(function (k) {
+        window.vcBookKey = k;   // the game decrypts opening-book shards (and on the editor, the text edits) with it
+        window.vcBookBase = CFG.book;
+        window.vcSite = SITE;   // which site the game is on: 'live' has no Debug screen; 'test' and 'edit' have it (as a build with no gate does)
+        window.vcLevel = res.level;   // 'tester' or 'developer', as its slot or check confirmed
+        return readText(k);
+      }).then(function () { return html; });
+    }).then(open);
+  }
+  // the box, ready for a code (the page's level isn't this device's)
+  function ask(line) {
+    document.documentElement.classList.remove('returning');
+    go.disabled = false; go.classList.remove('busy');
+    msg.className = 'msg' + (line ? ' note' : ''); msg.textContent = line || '';
+    input.focus();
+  }
+  var NEED = 'This page needs the developer code.';
+  // a level's key confirmed (or not) against this gate: open the page, ask for the developer code, or say the code is wrong
+  function enter(res, raw, typed) {
+    if (!res) {
+      if (!typed) { ask(''); return; }
+      go.disabled = false; go.classList.remove('busy');
+      msg.className = 'msg'; msg.textContent = 'That code didn’t work.';
+      form.classList.remove('wrong'); void form.offsetWidth; form.classList.add('wrong');
+      input.select();
+      return;
+    }
+    remember(res.level, raw);
+    if (!res.keys) { ask(NEED); return; }
+    return openWith(res).then(null, broken);
+  }
+  function environment() {
+    if (!window.crypto || !crypto.subtle) { ask('This page needs to be opened over https.'); return false; }
+    if (typeof DecompressionStream !== 'function') { ask('This browser is too old for Vibe Chess. Please update it.'); return false; }
+    return true;
+  }
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!input.value.trim() || !environment()) return;
+    go.disabled = true; go.classList.add('busy'); msg.textContent = '';
+    gameFile(); textFile();
+    levelKey(input.value).then(function (raw) { return confirm(raw).then(function (res) { return enter(res, raw, true); }); }, broken);
+  });
+  input.addEventListener('input', function () { form.classList.remove('wrong'); msg.className = 'msg'; msg.textContent = ''; });
+
+  // a device's older entries: the codes themselves, the developer's (the test site's) first, then the tester's. Each is
+  // turned into a level key and confirmed here; the first that is takes the place of a pass. They stay where they are.
+  function migrate(i) {
+    var code = null;
+    while (i < LEGACY.length && !(code = (function () { try { return localStorage.getItem(LEGACY[i]); } catch (e) { return null; } })())) i++;
+    if (!code || !code.trim()) return Promise.resolve(null);
+    return levelKey(code).then(function (raw) {
+      return confirm(raw).then(function (res) { return res ? { res: res, raw: raw } : migrate(i + 1); });
+    }, function () { return migrate(i + 1); });
+  }
+  // this device has been let in before: straight through, or the box when its level isn't enough here
+  function returning() {
+    var pass = readPass();
+    if (!pass) removePass();   // (nothing, or a pass that isn't one)
+    if (pass) {
+      var raw = bytes(pass.key);
+      if (pass.level === 'tester' && !CFG.slots.tester) {   // the page needs more than a tester's pass: nothing to fetch
+        return tryLevel(raw, 'tester').then(function (res) { if (res) ask(NEED); else { removePass(); ask(''); } });
+      }
+      gameFile(); textFile();
+      return tryLevel(raw, pass.level).then(function (res) {
+        if (!res) { removePass(); ask(''); return; }   // a code was changed since
+        if (!res.keys) { ask(NEED); return; }
+        return openWith(res).then(null, broken);
+      });
+    }
+    gameFile(); textFile();
+    return migrate(0).then(function (m) { if (!m) { ask(''); return; } return enter(m.res, m.raw, false); });
+  }
+  if (!environment()) return;
+  var hasOld = false; try { hasOld = !!(localStorage.getItem(PASS) || localStorage.getItem(LEGACY[0]) || localStorage.getItem(LEGACY[1])); } catch (e) {}
+  if (hasOld) returning().then(null, function (e) { broken(e); }); else { gameFile(); textFile(); input.focus(); }   // a fresh device downloads while the code is typed
+})();
+</script>
+</body>
+</html>
